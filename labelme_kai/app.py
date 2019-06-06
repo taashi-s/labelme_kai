@@ -308,7 +308,7 @@ class MainWindow(QtWidgets.QMainWindow):
             'Start drawing linestrip. Ctrl+LeftClick ends creation.',
             enabled=False,
         )
-        clear_label = action('Clear ContinuationLabel', lambda: self.clearContinuationLabel(),
+        clear_label = action('Clear Cont Label', lambda: self.clearContinuationLabel(),
                         shortcuts['clear_label'], 'undo',
                         'Clear Continuation label', enabled=False)
 
