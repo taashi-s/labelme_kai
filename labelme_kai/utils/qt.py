@@ -33,6 +33,7 @@ def newAction(parent, text, slot=None, shortcut=None, icon=None,
         a.setIconText(text.replace(' ', '\n'))
         a.setIcon(newIcon(icon))
     if shortcut is not None:
+        print('## ', text, ' : ', shortcut)
         if isinstance(shortcut, (list, tuple)):
             a.setShortcuts(shortcut)
         else:
