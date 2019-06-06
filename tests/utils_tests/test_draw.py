@@ -1,7 +1,7 @@
 import numpy as np
 
-from labelme.utils import draw as draw_module
-from labelme.utils import shape as shape_module
+from labelme_kai.utils import draw as draw_module
+from labelme_kai.utils import shape as shape_module
 
 from .util import get_img_and_lbl
 

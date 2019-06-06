@@ -60,7 +60,7 @@ class MainWindow(QtWidgets.QMainWindow):
             if output_file is None:
                 output_file = output
 
-        # see labelme/config/default_config.yaml for valid configuration
+        # see labelme_kai/config/default_config.yaml for valid configuration
         if config is None:
             config = get_config()
         self._config = config
@@ -584,7 +584,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # XXX: Could be completely declarative.
         # Restore application settings.
-        self.settings = QtCore.QSettings('labelme', 'labelme')
+        self.settings = QtCore.QSettings('labelme_kai', 'labelme_kai')
         # FIXME: QSettings.value can return None on PyQt4
         self.recentFiles = self.settings.value('recentFiles', []) or []
         size = self.settings.value('window/size', QtCore.QSize(600, 500))

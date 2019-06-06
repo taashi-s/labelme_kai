@@ -7,8 +7,8 @@ import os.path as osp
 import PIL.Image
 import yaml
 
-from labelme.logger import logger
-from labelme import utils
+from labelme_kai.logger import logger
+from labelme_kai import utils
 
 
 def main():

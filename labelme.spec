@@ -6,12 +6,12 @@ block_cipher = None
 
 
 a = Analysis(
-    ['labelme/main.py'],
-    pathex=['labelme'],
+    ['main.py'],
+    pathex=['labelme_kai'],
     binaries=[],
     datas=[
-        ('labelme/config/default_config.yaml', 'labelme/config'),
-        ('labelme/icons/*', 'labelme/icons'),
+        ('labelme_kai/config/default_config.yaml', 'labelme_kai/config'),
+        ('labelme_kai/icons/*', 'labelme_kai/icons'),
     ],
     hiddenimports=[],
     hookspath=[],
@@ -28,18 +28,18 @@ exe = EXE(
     a.binaries,
     a.zipfiles,
     a.datas,
-    name='labelme',
+    name='labelme_kai',
     debug=False,
     strip=False,
     upx=True,
     runtime_tmpdir=None,
     console=False,
-    icon='labelme/icons/icon.ico',
+    icon='labelme_kai/icons/icon.ico',
 )
 app = BUNDLE(
     exe,
-    name='labelme.app',
-    icon='labelme/icons/icon.icns',
+    name='labelme_kai.app',
+    icon='labelme_kai/icons/icon.icns',
     bundle_identifier=None,
     info_plist={'NSHighResolutionCapable': 'True'},
 )
