@@ -1087,18 +1087,13 @@ class MainWindow(QtWidgets.QMainWindow):
         text = None
         flags = {}
 
-        act_mode = self.getActionsMode()
-        if act_mode == '':
-            print('[newShape] mode error.')
-            return
-
         if items:
             text = items[0].text()
         if self._config['display_label_popup'] or not text:
             # instance label auto increment
             if self._config['instance_label_auto_increment']:
                 #previous_label = self.labelDialog.edit.text()
-                previous_label = self.continuationLabel[act_mode]
+                previous_label = self.continuationLabel[self.canvas.createMode]
                 if previous_label is None:
                     previous_label = ''
                 split = previous_label.split('-')
@@ -1109,11 +1104,11 @@ class MainWindow(QtWidgets.QMainWindow):
                     instance_text = previous_label
                 if instance_text != '':
                     text = instance_text
-                self.continuationLabel[act_mode] = text
-            if self.continuationLabel[act_mode] is None:
+                self.continuationLabel[self.canvas.createMode] = text
+            if self.continuationLabel[self.canvas.createMode] is None:
                 text, flags = self.labelDialog.popUp(text)
-                self.continuationLabel[act_mode] = text
-            text = self.continuationLabel[act_mode]
+                self.continuationLabel[self.canvas.createMode] = text
+            text = self.continuationLabel[self.canvas.createMode]
 
         if text and not self.validateLabel(text):
             self.errorMessage('Invalid label',
@@ -1698,8 +1693,4 @@ class MainWindow(QtWidgets.QMainWindow):
             return ''
 
     def clearContinuationLabel(self):
-        act_mode = self.getActionsMode()
-        if act_mode == '':
-            print('[clearContinuationLabel] mode error.')
-        else:
-            self.continuationLabel[act_mode] = None
+        self.continuationLabel[self.canvas.createMode] = None
