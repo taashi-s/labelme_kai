@@ -16,6 +16,15 @@ Specializes in continuous annotation.
 
 - Show shortcuts
 
+
+## How to use
+(TODO : change to command)
+
+1. Clone this repo.
+2. Move into repo.
+3. `pyhton main.py`
+
+
 ## Shortcuts
 
 | shortcuts | action |
