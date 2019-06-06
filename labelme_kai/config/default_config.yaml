@@ -78,3 +78,4 @@ shortcuts:
   edit_line_color: Ctrl+L
   edit_fill_color: Ctrl+Shift+L
   toggle_keep_prev_mode: Ctrl+P
+  clear_label: B

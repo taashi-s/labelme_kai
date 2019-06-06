@@ -178,13 +178,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.addDockWidget(Qt.RightDockWidgetArea, self.shape_dock)
         self.addDockWidget(Qt.RightDockWidgetArea, self.file_dock)
 
-        self.continueLabels = {}
-        self.continueLabels['polygon'] = None
-        self.continueLabels['rectangle'] = None
-        self.continueLabels['line'] = None
-        self.continueLabels['point'] = None
-        self.continueLabels['circle'] = None
-        self.continueLabels['linestrip'] = None
+        self.continuationLabel = {}
+        self.continuationLabel['polygon'] = None
+        self.continuationLabel['rectangle'] = None
+        self.continuationLabel['line'] = None
+        self.continuationLabel['point'] = None
+        self.continuationLabel['circle'] = None
+        self.continuationLabel['linestrip'] = None
 
         # Actions
         action = functools.partial(utils.newAction, self)
@@ -308,6 +308,10 @@ class MainWindow(QtWidgets.QMainWindow):
             'Start drawing linestrip. Ctrl+LeftClick ends creation.',
             enabled=False,
         )
+        clear_label = action('Clear ContinuationLabel', lambda: self.clearContinuationLabel(),
+                        shortcuts['clear_label'], 'undo',
+                        'Clear Continuation label', enabled=False)
+
         editMode = action('Edit Polygons', self.setEditMode,
                           shortcuts['edit_polygon'], 'edit',
                           'Move and edit the selected polygons', enabled=False)
@@ -430,6 +434,7 @@ class MainWindow(QtWidgets.QMainWindow):
             createLineMode=createLineMode,
             createPointMode=createPointMode,
             createLineStripMode=createLineStripMode,
+            clear_label=clear_label,
             shapeLineColor=shapeLineColor, shapeFillColor=shapeFillColor,
             zoom=zoom, zoomIn=zoomIn, zoomOut=zoomOut, zoomOrg=zoomOrg,
             fitWindow=fitWindow, fitWidth=fitWidth,
@@ -456,6 +461,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 undo,
                 undoLastPoint,
                 addPoint,
+                clear_label,
             ),
             onLoadActive=(
                 close,
@@ -550,6 +556,7 @@ class MainWindow(QtWidgets.QMainWindow):
             copy,
             delete,
             undo,
+            clear_label,
             None,
             zoomIn,
             zoom,
@@ -764,6 +771,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.canvas.setEditing(edit)
         self.canvas.createMode = createMode
         print('@@@ Change Mode : ', createMode)
+        self.actions.clear_label.setEnabled(True)
         if edit:
             self.actions.createMode.setEnabled(True)
             self.actions.createRectangleMode.setEnabled(True)
@@ -779,7 +787,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.actions.createLineMode.setEnabled(True)
                 self.actions.createPointMode.setEnabled(True)
                 self.actions.createLineStripMode.setEnabled(True)
-                self.continueLabels['polygon'] = None
             elif createMode == 'rectangle':
                 self.actions.createMode.setEnabled(True)
                 self.actions.createRectangleMode.setEnabled(False)
@@ -787,7 +794,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.actions.createLineMode.setEnabled(True)
                 self.actions.createPointMode.setEnabled(True)
                 self.actions.createLineStripMode.setEnabled(True)
-                self.continueLabels['rectangle'] = None
             elif createMode == 'line':
                 self.actions.createMode.setEnabled(True)
                 self.actions.createRectangleMode.setEnabled(True)
@@ -795,7 +801,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.actions.createLineMode.setEnabled(False)
                 self.actions.createPointMode.setEnabled(True)
                 self.actions.createLineStripMode.setEnabled(True)
-                self.continueLabels['line'] = None
             elif createMode == 'point':
                 self.actions.createMode.setEnabled(True)
                 self.actions.createRectangleMode.setEnabled(True)
@@ -803,7 +808,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.actions.createLineMode.setEnabled(True)
                 self.actions.createPointMode.setEnabled(False)
                 self.actions.createLineStripMode.setEnabled(True)
-                self.continueLabels['point'] = None
             elif createMode == "circle":
                 self.actions.createMode.setEnabled(True)
                 self.actions.createRectangleMode.setEnabled(True)
@@ -811,7 +815,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.actions.createLineMode.setEnabled(True)
                 self.actions.createPointMode.setEnabled(True)
                 self.actions.createLineStripMode.setEnabled(True)
-                self.continueLabels['circle'] = None
             elif createMode == "linestrip":
                 self.actions.createMode.setEnabled(True)
                 self.actions.createRectangleMode.setEnabled(True)
@@ -819,7 +822,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.actions.createLineMode.setEnabled(True)
                 self.actions.createPointMode.setEnabled(True)
                 self.actions.createLineStripMode.setEnabled(False)
-                self.continueLabels['linestrip'] = None
             else:
                 raise ValueError('Unsupported createMode: %s' % createMode)
         self.actions.editMode.setEnabled(not edit)
@@ -1096,7 +1098,7 @@ class MainWindow(QtWidgets.QMainWindow):
             # instance label auto increment
             if self._config['instance_label_auto_increment']:
                 #previous_label = self.labelDialog.edit.text()
-                previous_label = self.continueLabels[act_mode]
+                previous_label = self.continuationLabel[act_mode]
                 if previous_label is None:
                     previous_label = ''
                 split = previous_label.split('-')
@@ -1107,11 +1109,11 @@ class MainWindow(QtWidgets.QMainWindow):
                     instance_text = previous_label
                 if instance_text != '':
                     text = instance_text
-                self.continueLabels[act_mode] = text
-            if self.continueLabels[act_mode] is None:
+                self.continuationLabel[act_mode] = text
+            if self.continuationLabel[act_mode] is None:
                 text, flags = self.labelDialog.popUp(text)
-                self.continueLabels[act_mode] = text
-            text = self.continueLabels[act_mode]
+                self.continuationLabel[act_mode] = text
+            text = self.continuationLabel[act_mode]
 
         if text and not self.validateLabel(text):
             self.errorMessage('Invalid label',
@@ -1694,3 +1696,10 @@ class MainWindow(QtWidgets.QMainWindow):
             return 'linestrip'
         else:
             return ''
+
+    def clearContinuationLabel(self):
+        act_mode = self.getActionsMode()
+        if act_mode == '':
+            print('[clearContinuationLabel] mode error.')
+        else:
+            self.continuationLabel[act_mode] = None
